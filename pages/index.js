@@ -54,6 +54,7 @@ export default function Home() {
     if(!name || !email || !phone || !flattype||!purpose || !message){
       alert("Please fill in all fields");
       setLoading(false);
+      return;
     }
 
     try {
