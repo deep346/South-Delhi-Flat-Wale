@@ -7,22 +7,18 @@ export default function Home() {
   const formRef = useRef(null);
   const thankYouRef = useRef(null);
   const [submitted, setSubmitted] = useState(false);
+  const[loading, setLoading] = useState(false);
   useEffect(() => {
     if (submitted && thankYouRef.current) {
       thankYouRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [submitted]);
 
-
-
-
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true); // to send enquiry quickly
-
+    setLoading(true);
+    //setSubmitted(true); // to send enquiry quickly
+    
     const form = formRef.current;
     const formData = new FormData(form);
 
@@ -32,24 +28,33 @@ export default function Home() {
 
     const nameRegex = /^[A-Za-z\s]+$/;
     if (!nameRegex.test(name)) {
+
       alert("Name should contain only letters and spaces.");
+      setLoading(false);
       return;
     }
 
     if (!email.includes("@")) {
       alert("Please enter a valid email address.");
+      setLoading(false);
       return;
     }
 
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
       alert("Phone number should be exactly 10 digits.");
+      setLoading(false);
       return;
     }
 
     const flattype = formData.get("flattype")?.trim() || "";
     const purpose = formData.get("purpose")?.trim() || "";
     const message = formData.get("message")?.trim() || "";
+    // To check if customer doesn't give proper fields and every fields should be filled by the customer 
+    if(!name || !email || !phone || !flattype||!purpose || !message){
+      alert("Please fill in all fields");
+      setLoading(false);
+    }
 
     try {
 
@@ -75,6 +80,8 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       alert("Connection failed. Please check your internet or try again later.");
+    } finally{
+      setLoading(false);
     }
   };
 
